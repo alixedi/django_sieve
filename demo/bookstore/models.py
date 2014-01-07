@@ -36,6 +36,9 @@ class Book(models.Model):
 class Sieve(models.Model):
     user = models.ForeignKey('auth.User')
     publisher = models.ForeignKey(Publisher)
+    author = models.ForeignKey(Author)
 
     def __unicode__(self):
-        return self.publisher.name
+        return '%s - %s - %s' % (self.user.email, 
+                                 self.publisher.name, 
+                                 self.author.email)

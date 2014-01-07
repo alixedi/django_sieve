@@ -45,15 +45,11 @@ class SieveManager(models.Manager):
         """Returns queryset filtered according to sieve."""
         sieve_model = self.get_sieve_model()
         model = self.model
-        print sieve_model, model
         kwargs = {}
         for pivot_field in self.get_pivot_fields(sieve_model):
             pivot_model = pivot_field.rel.to
             accessor = self.get_related_chain(model, pivot_model)
             sieve_qs = sieve_model.objects.filter(user=user)
             kwargs[accessor + '__in'] = self.get_pivot_objs(sieve_qs, pivot_field)
-            print pivot_field, pivot_model, accessor, sieve_qs
-        print kwargs
-        res= self.model.objects.filter(**kwargs)
-        print res
-        return res
+        return self.model.objects.filter(**kwargs)
+
