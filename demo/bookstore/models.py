@@ -35,10 +35,8 @@ class Book(models.Model):
 # the pivot columns may be many-to-many! bit simple first.
 class Sieve(models.Model):
     user = models.ForeignKey('auth.User')
-    publisher = models.ForeignKey(Publisher)
+    publisher = models.ManyToManyField(Publisher)
     author = models.ForeignKey(Author)
 
     def __unicode__(self):
-        return '%s - %s - %s' % (self.user.email, 
-                                 self.publisher.name, 
-                                 self.author.email)
+        return self.user.username

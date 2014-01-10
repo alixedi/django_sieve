@@ -4,6 +4,8 @@ from django.db import models
 from django.conf import settings
 from django.db.models.loading import get_model
 from django.contrib.auth.models import User
+from django.db.models import ManyToManyField
+
 
 class SieveManager(models.Manager):
     """Use this ModelManager for any models that you want to sieve."""
@@ -28,7 +30,7 @@ class SieveManager(models.Manager):
     def get_pivot_fields(self, sieve_model):
         """Returns the pivot fields given sieve model"""
         res = []
-        for f in sieve_model._meta.fields:
+        for f in sieve_model._meta.fields + sieve_model._meta.many_to_many:
             if f.rel:
                 if not f.rel.to == User:
                     res.append(f)
@@ -38,7 +40,11 @@ class SieveManager(models.Manager):
         """Returns all pivot_objs from sieve_qs"""
         res = []
         for obj in sieve_qs:
-            res.append(getattr(obj, pivot_field.name))
+            val = getattr(obj, pivot_field.name)
+            if isinstance(pivot_field, ManyToManyField):
+                res = res + list(val.all())
+            else:
+                res.append(val)
         return res
 
     def sieve(self, user):
@@ -48,8 +54,12 @@ class SieveManager(models.Manager):
         kwargs = {}
         for pivot_field in self.get_pivot_fields(sieve_model):
             pivot_model = pivot_field.rel.to
-            accessor = self.get_related_chain(model, pivot_model)
             sieve_qs = sieve_model.objects.filter(user=user)
-            kwargs[accessor + '__in'] = self.get_pivot_objs(sieve_qs, pivot_field)
+            if model == pivot_model:
+                objs = self.get_pivot_objs(sieve_qs, pivot_field)
+                kwargs['pk__in'] = [obj.pk for obj in objs]
+            accessor = self.get_related_chain(model, pivot_model)
+            if not accessor is None:
+                kwargs[accessor + '__in'] = self.get_pivot_objs(sieve_qs, pivot_field)
         return self.model.objects.filter(**kwargs)
 

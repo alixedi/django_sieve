@@ -5,15 +5,24 @@ from django.views.generic import ListView
 from django.contrib import admin
 admin.autodiscover()
 
-from bookstore.models import Book
+from bookstore.models import Book, Publisher, Author
 from django.contrib.auth.models import User
 
 class BookView(ListView):
 	queryset = Book.objects.sieve(user=User.objects.get(pk=1))
 
+class AuthorView(ListView):
+	queryset = Author.objects.sieve(user=User.objects.get(pk=1))
+
+class PublisherView(ListView):
+	queryset = Publisher.objects.sieve(user=User.objects.get(pk=1))
+
+
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', BookView.as_view(), name='home'),
+    url(r'^books/$', BookView.as_view(), name='books'),
+    url(r'^authors/$', AuthorView.as_view(), name='authors'),
+    url(r'^publishers/$', PublisherView.as_view(), name='publishers'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
