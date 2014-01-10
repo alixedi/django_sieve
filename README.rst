@@ -32,7 +32,7 @@ To use django_sieve in a project:
 
 	class Sieve(models.Model):
 		user = models.ForeignKey('auth.User')
-		publisher = models.ForeignKey(Publisher)
+		publisher = models.ManyToManyField(Publisher)
 		author = models.ForeignKey(Author)
 
 3. Declare your project-wide sieve model in `settings.py`. For instance, if the sieve model is called Sieve and resides in the bookstore app: ::
