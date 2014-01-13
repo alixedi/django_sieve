@@ -13,3 +13,10 @@ History
 ++++++++++++++++++
 
 * Added support for ManyToMany fields in SIEVE_MODEL
+
+
+
+0.3.0 (2014)
+++++++++++++++++++
+
+* Changed the mapping from User to Group, dealt with self-referencing models etc.
