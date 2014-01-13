@@ -31,7 +31,7 @@ To use django_sieve in a project:
 2. Define a sieve model. A sieve model is the control for defining the filtering criteria for user data. For instance, in our example, we have a bookstore in which a user can subscribe to all the books from a particular author or all the books from a particular publisher. In this case, his book list need to only contain books from the publisher and author that he has chosen. In order to do this, we define a sieve model like so: ::
 
 	class Sieve(models.Model):
-		user = models.ForeignKey('auth.User')
+		group = models.ForeignKey('auth.Group')
 		publisher = models.ManyToManyField(Publisher)
 		author = models.ForeignKey(Author)
 
