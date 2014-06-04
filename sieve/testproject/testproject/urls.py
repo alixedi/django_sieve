@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'^books/$', BookView.as_view(), name='books'),
     url(r'^authors/$', AuthorView.as_view(), name='authors'),
     url(r'^publishers/$', PublisherView.as_view(), name='publishers'),
-    # url(r'^demo/', include('demo.foo.urls')),
+    # url(r'^testproject/', include('testproject.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
