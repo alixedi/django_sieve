@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Django sieve by alixedi</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Django sieve</h1>
+        <p>Serve user-wise data beautifully, minimally and correctly.</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/alixedi/django_sieve" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/alixedi/django_sieve/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/alixedi/django_sieve/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>
+<a name="django_sieve" class="anchor" href="#django_sieve"><span class="octicon octicon-link"></span></a>django_sieve</h1>
+
+<p><a href="https://pypi.python.org/pypi/django_sieve/"><img src="https://badge.fury.io/py/django_sieve.png" alt="PyPI package"></a>
+<a href="https://travis-ci.org/alixedi/django_sieve"><img src="https://travis-ci.org/alixedi/django_sieve.png?branch=master" alt="Build"></a>
+<a href="https://crate.io/packages/django_sieve?version=latest"><img src="https://pypip.in/d/django_sieve/badge.png" alt="Downloads"></a>
+<a href="https://coveralls.io/r/alixedi/django_sieve?branch=master"><img src="https://coveralls.io/repos/alixedi/django_sieve/badge.png?branch=master" alt="Coverage"></a></p>
+
+<p>For a lot of web applications - Blogs come to mind as a canonical example, the queryset needs to be filtered in the views based upon some business rules. For instance, in a Blog, a “Dashboard” view - allowing editing of posts, should only ever have posts written by the user who is currently logged-in.</p>
+
+<p>In general, there is a need to filter data based on some business logic - universally! i.e. across each and every view. The ugly way of doing this would be to write queries substantiating the business logic in every single view. Sieve does the same job beautifully, minimally and correctly.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>We are at the cheeseshop:</p>
+
+<pre><code>pip install django_sieve
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>To use django_sieve in a project:</p>
+
+<ol>
+<li><p>Include it in INSTALLED_APPS in your settings file.</p></li>
+<li>
+<p>Define a sieve model. A sieve model is the control for defining the filtering criteria of user data. For instance, in our example, we have a bookstore in which a user can subscribe to all the books from a particular author or all the books from a few publishers. In this case, his book list need to only contain books from the author and publishers that he has chosen. In order to do this, we define a sieve model like so:</p>
+
+<pre><code>class Sieve(models.Model):
+    group = models.ForeignKey('auth.Group')
+    publisher = models.ManyToManyField(Publisher)
+    author = models.ForeignKey(Author)
+</code></pre>
+</li>
+<li>
+<p>Declare your project-wide sieve model in settings.py. For instance, if the sieve model is called Sieve and resides in the bookstore app:</p>
+
+<pre><code>SIEVE_MODEL = 'bookstore.Sieve'
+</code></pre>
+</li>
+<li>
+<p>Use SieveManager as the ModelManager for all the models in your project that you want to filter based on the criteria defined in the sieve model:</p>
+
+<pre><code>class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=40)
+    email = models.EmailField()
+    objects = SieveManager()
+</code></pre>
+</li>
+<li>
+<p>Use the sieve method to define your queryset in your views like so:</p>
+
+<pre><code>class BookView(ListView):
+    queryset = Book.objects.sieve(user=request.user)
+</code></pre>
+</li>
+</ol><p>That is all. Site-wide filtering of user data based on predefined criteria without having to write queries for all the views.</p>
+
+<p>Please be wary of performance issues though - in our experience, django-sieve works for 90% cases especially when you need to bring everything up for a quick demo. However, as your site matures and the number of users increase, you may want to invest in profiling your views and hand-crafting these queries when and where required.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/alixedi">alixedi</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-51375524-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
