@@ -12,7 +12,8 @@ PROJECT_ROOT = abspath(dirname(__file__))
 class SieveTest(TestCase):
 
     def setUp(self):
-        call_command('loaddata', join(PROJECT_ROOT, 'fixtures/bookstore.json'))
+        call_command('loaddata',
+                     join(PROJECT_ROOT, 'fixtures/bookstore.json'))
         self.client = Client()
 
     def test_books(self):
@@ -22,24 +23,28 @@ class SieveTest(TestCase):
         """
         # tech_junkie will only ever get "Introduction to C" book
         user = User.objects.get(username='tech_junkie')
-        books = list(Book.objects.sieve(user=user).values_list('title', flat=True))
+        books = list(Book.objects.sieve(user=user).
+                     values_list('title', flat=True))
         self.assertEqual([u'Introduction to C'], books)
         # literature_junkie will only ever get "The Alchemist"
         user = User.objects.get(username='literature_junkie')
-        books = list(Book.objects.sieve(user=user).values_list('title', flat=True))
+        books = list(Book.objects.sieve(user=user).
+                     values_list('title', flat=True))
         self.assertEqual([u'The Alchemist'], books)
 
     def test_authors(self):
         """
         Test that we get access to right authors for users in different groups.
         """
-         # tech_junkie will only ever get Lafore
+        # tech_junkie will only ever get Lafore
         user = User.objects.get(username='tech_junkie')
-        authors = list(Author.objects.sieve(user=user).values_list('last_name', flat=True))
+        authors = list(Author.objects.sieve(user=user).
+                       values_list('last_name', flat=True))
         self.assertEqual([u'Lafore'], authors)
         # literature_junkie will only ever get Coelho
         user = User.objects.get(username='literature_junkie')
-        authors = list(Author.objects.sieve(user=user).values_list('last_name', flat=True))
+        authors = list(Author.objects.sieve(user=user).
+                       values_list('last_name', flat=True))
         self.assertEqual([u'Coelho'], authors)
 
     def test_publishers(self):
@@ -49,10 +54,11 @@ class SieveTest(TestCase):
         """
         # tech_junkie will only ever get Wrox
         user = User.objects.get(username='tech_junkie')
-        publishers = list(Publisher.objects.sieve(user=user).values_list('name', flat=True))
+        publishers = list(Publisher.objects.sieve(user=user).
+                          values_list('name', flat=True))
         self.assertEqual([u'Wrox'], publishers)
         # _junkie will only ever get Wrox
         user = User.objects.get(username='literature_junkie')
-        publishers = list(Publisher.objects.sieve(user=user).values_list('name', flat=True))
+        publishers = list(Publisher.objects.sieve(user=user).
+                          values_list('name', flat=True))
         self.assertEqual([u'Penguin'], publishers)
-
