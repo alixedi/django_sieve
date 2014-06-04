@@ -12,7 +12,8 @@ django_sieve
         :target: https://crate.io/packages/django_sieve?version=latest
 
 
-Filter user-data based on multiple criteria.
+For a lot of web applications - Blogs come to mind as a canonical example, the queryset needs to be filtered in the views based upon some business rules. For instance, in a Blog, a "Dashboard" view - allowing editing of posts, should only ever have posts written by the user who is currently logged-in.
+In general, there is a need to filter data based on some business logic - universally! i.e. across each and every view. The ugly way of doing this would be to write queries substantiating the business logic in every single view. Sieve does the same job beautifully, minimally and correctly.
 
 Installation
 ------------
