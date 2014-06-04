@@ -65,40 +65,35 @@
 <p>To use django_sieve in a project:</p>
 
 <ol>
-<li><p>Include it in INSTALLED_APPS in your settings file.</p></li>
-<li>
-<p>Define a sieve model. A sieve model is the control for defining the filtering criteria of user data. For instance, in our example, we have a bookstore in which a user can subscribe to all the books from a particular author or all the books from a few publishers. In this case, his book list need to only contain books from the author and publishers that he has chosen. In order to do this, we define a sieve model like so:</p>
+<li><p>Include it in <code>INSTALLED\_APPS</code> in your settings file.</p></li>
+<li><p>Define a sieve model. A sieve model is the control for defining the filtering criteria of user data. For instance, in our example, we have a bookstore in which a user can subscribe to all the books from a particular author or all the books from a few publishers. In this case, his book list need to only contain books from the author and publishers that he has chosen. In order to do this, we define a sieve model like so:</p></li>
+</ol><div class="highlight highlight-python"><pre><span class="k">class</span> <span class="nc">Sieve</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s">'auth.Group'</span><span class="p">)</span>
+    <span class="n">publisher</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Publisher</span><span class="p">)</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Author</span><span class="p">)</span>
+</pre></div>
 
-<pre><code>class Sieve(models.Model):
-    group = models.ForeignKey('auth.Group')
-    publisher = models.ManyToManyField(Publisher)
-    author = models.ForeignKey(Author)
-</code></pre>
-</li>
-<li>
-<p>Declare your project-wide sieve model in settings.py. For instance, if the sieve model is called Sieve and resides in the bookstore app:</p>
+<ol>
+<li>Declare your project-wide sieve model in settings.py. For instance, if the sieve model is called Sieve and resides in the bookstore app:</li>
+</ol><div class="highlight highlight-python"><pre><span class="n">SIEVE_MODEL</span> <span class="o">=</span> <span class="s">'bookstore.Sieve'</span>
+</pre></div>
 
-<pre><code>SIEVE_MODEL = 'bookstore.Sieve'
-</code></pre>
-</li>
-<li>
-<p>Use SieveManager as the ModelManager for all the models in your project that you want to filter based on the criteria defined in the sieve model:</p>
+<ol>
+<li>Use SieveManager as the ModelManager for all the models in your project that you want to filter based on the criteria defined in the sieve model:</li>
+</ol><div class="highlight highlight-python"><pre><span class="k">class</span> <span class="nc">Author</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">EmailField</span><span class="p">()</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">SieveManager</span><span class="p">()</span>
+</pre></div>
 
-<pre><code>class Author(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=40)
-    email = models.EmailField()
-    objects = SieveManager()
-</code></pre>
-</li>
-<li>
-<p>Use the sieve method to define your queryset in your views like so:</p>
+<ol>
+<li>Use the sieve method to define your queryset in your views like so:</li>
+</ol><div class="highlight highlight-python"><pre><span class="k">class</span> <span class="nc">BookView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Book</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">sieve</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
 
-<pre><code>class BookView(ListView):
-    queryset = Book.objects.sieve(user=request.user)
-</code></pre>
-</li>
-</ol><p>That is all. Site-wide filtering of user data based on predefined criteria without having to write queries for all the views.</p>
+<p>That is all. Site-wide filtering of user data based on predefined criteria without having to write queries for all the views.</p>
 
 <p>Please be wary of performance issues though - in our experience, django-sieve works for 90% cases especially when you need to bring everything up for a quick demo. However, as your site matures and the number of users increase, you may want to invest in profiling your views and hand-crafting these queries when and where required.</p>
       </section>
