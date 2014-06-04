@@ -11,6 +11,9 @@ django_sieve
 .. image:: https://pypip.in/d/django_sieve/badge.png
         :target: https://crate.io/packages/django_sieve?version=latest
 
+.. image:: https://coveralls.io/repos/alixedi/django_sieve/badge.png?branch=master
+  :target: https://coveralls.io/r/alixedi/django_sieve?branch=master
+
 
 For a lot of web applications - Blogs come to mind as a canonical example, the queryset needs to be filtered in the views based upon some business rules. For instance, in a Blog, a "Dashboard" view - allowing editing of posts, should only ever have posts written by the user who is currently logged-in.
 
